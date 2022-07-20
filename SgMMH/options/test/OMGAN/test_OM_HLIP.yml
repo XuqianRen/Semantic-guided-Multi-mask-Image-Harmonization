@@ -1,0 +1,62 @@
+name: test_OM_HLIP
+model_type: OMModel
+scale: 1
+num_gpu: auto
+manual_seed: 0
+
+datasets:
+  test_1:  # the 1st test dataset
+    name: HLIP
+    type: MultiMaskTestDataset
+    dataroot_path: dataset_path
+    io_backend:
+      type: disk
+
+    gt_size: 256
+    mean: 0.5
+    std: 0.5
+    num_worker_per_gpu: 1
+    batch_size_per_gpu: 1
+
+# network structures
+network_g:
+  type: UnetGenerator
+  input_nc: 3
+  output_nc: 6 
+  num_downs: 8
+  ngf: 64
+  norm_type: instance
+  use_dropout: True
+  use_attention: True
+
+# path
+path:
+  pretrain_network_g: pretrain_model_path
+  strict_load_g: true
+
+# validation settings
+val:
+  save_img: true
+  suffix: ~  # add suffix to saved images, if None, use exp name
+
+  metrics:
+    # psnr: # metric name, can be arbitrary
+    #   type: calculate_psnr
+    #   crop_border: 0
+    #   test_y_channel: false
+    # ssim:
+    #   type: calculate_ssim
+    #   crop_border: 0
+    #   test_y_channel: false
+    # mse: # metric name, can be arbitrary
+    #   type: calculate_mse
+    #   crop_border: 0
+    #   test_y_channel: false
+    # lpips: # metric name, can be arbitrary
+    #   type: calculate_pips
+    #   crop_border: 0
+    #   test_y_channel: false
+
+dist_params:
+  backend: nccl
+  port: 29504
